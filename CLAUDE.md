@@ -110,7 +110,7 @@ Set `IsDeleted = true`; never hard-delete. The DbContext applies `HasQueryFilter
 
 Use `PaginatedList<T>` for list endpoints (`Inventory.Application/Common/Pagination/`). Create via the `ToPaginatedListAsync(pageIndex, pageSize)` extension in `IQuerableExtensions`. GET endpoints accept a `*SearchParams` DTO via `[FromQuery]` containing pagination fields and optional filters.
 
-Pagination field naming is **inconsistent across SearchParams**: most use `PageIndex`/`PageSize` (1-based), but `PurchaseSearchParams` uses `Page`/`PageSize`. When adding a new endpoint, check the existing SearchParams in that domain and match the convention already used there. Pass the correct field to the repository method.
+Pagination field naming is consistent across all SearchParams: all use `PageIndex`/`PageSize` (1-based). When adding a new endpoint, match this convention. Pass the correct field to the repository method.
 
 ### Inventory movements
 

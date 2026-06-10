@@ -2,7 +2,9 @@ using Inventory.API.Middlewares;
 using Inventory.Application;
 using Inventory.Infrastructure;
 using Inventory.Infrastructure.Context;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 var CustomCors = "MyCustomCors";
@@ -47,6 +49,27 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+    {
+        var partitionKey = httpContext.Request.Headers["businessId"].FirstOrDefault()?.ToString() 
+                           ?? httpContext.Connection.RemoteIpAddress?.ToString() 
+                           ?? "unknown";
+
+        return RateLimitPartition.GetFixedWindowLimiter(partitionKey, _ =>
+            new FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 100,
+                QueueLimit = 0,
+                Window = TimeSpan.FromMinutes(1)
+            });
+    });
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -64,9 +87,13 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.MapSwagger().RequireAuthorization();
 app.UseCors(CustomCors);
+app.UseRateLimiter();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHealthChecks("/health");
+
 app.MapControllers();
 
 app.Run();

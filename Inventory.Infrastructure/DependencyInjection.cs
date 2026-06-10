@@ -101,6 +101,10 @@ public static class DependencyInjection
         services.AddScoped<IBusinessContextService, BusinessContextService>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+
+        services.AddHealthChecks()
+            .AddDbContextCheck<InventoryDbContext>();
+
         return services;
     }
 }

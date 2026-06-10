@@ -7,7 +7,7 @@ namespace Inventory.Application.DataTransferObjects.PurchaseDto
         public Guid? ProviderId { get; set; }
         public Guid? BranchId { get; set; }
         public Guid? WarehouseId { get; set; }
-        public int Page { get; set; } = 1;
+        public int PageIndex { get; set; } = 1;
         public int PageSize { get; set; } = 10;
     }
 }

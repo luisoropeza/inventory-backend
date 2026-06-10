@@ -334,7 +334,7 @@ Records are never hard-deleted. Setting `IsDeleted = true` hides them from all q
 
 ### Pagination
 
-List endpoints return `PaginatedList<T>`. Pass `pageIndex` / `pageSize` (1-based) as query parameters. `PurchaseSearchParams` uses `page` / `pageSize` instead — check the specific endpoint.
+List endpoints return `PaginatedList<T>`. Pass `pageIndex` / `pageSize` (1-based) as query parameters.
 
 ### Inventory movement strategies
 

@@ -97,7 +97,7 @@ namespace Inventory.Application.Services.PurchaseService
                 searchParams.ProviderId,
                 searchParams.BranchId,
                 searchParams.WarehouseId,
-                searchParams.Page,
+                searchParams.PageIndex,
                 searchParams.PageSize);
 
             return new PaginatedList<PurchaseResponse>(
