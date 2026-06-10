@@ -55,8 +55,8 @@ builder.Services.AddRateLimiter(options =>
 
     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
     {
-        var partitionKey = httpContext.Request.Headers["businessId"].FirstOrDefault()?.ToString() 
-                           ?? httpContext.Connection.RemoteIpAddress?.ToString() 
+        var partitionKey = httpContext.Request.Headers["businessId"].FirstOrDefault()?.ToString()
+                           ?? httpContext.Connection.RemoteIpAddress?.ToString()
                            ?? "unknown";
 
         return RateLimitPartition.GetFixedWindowLimiter(partitionKey, _ =>
