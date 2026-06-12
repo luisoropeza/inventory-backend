@@ -9,6 +9,7 @@ namespace Inventory.Infrastructure.Repositories
     {
         public async Task<RefreshToken?> GetByTokenAsync(string token) =>
             await context.RefreshTokens
+                .AsNoTracking()
                 .Include(rt => rt.User)
                     .ThenInclude(u => u.Role)
                 .Include(rt => rt.User)
@@ -24,6 +25,7 @@ namespace Inventory.Infrastructure.Repositories
         public async Task RevokeAsync(RefreshToken refreshToken)
         {
             refreshToken.IsRevoked = true;
+            context.RefreshTokens.Update(refreshToken);
             await context.SaveChangesAsync();
         }
     }

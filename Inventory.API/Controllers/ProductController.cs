@@ -71,7 +71,7 @@ namespace Inventory.API.Controllers
 
         [HttpGet("template")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetBulkUploadTemplate()
+        public IActionResult GetBulkUploadTemplate()
         {
             var stream = service.GetBulkUploadTemplate();
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "products_template.xlsx");

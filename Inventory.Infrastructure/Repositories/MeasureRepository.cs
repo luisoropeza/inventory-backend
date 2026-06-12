@@ -8,6 +8,6 @@ namespace Inventory.Infrastructure.Repositories
     public class MeasureRepository(InventoryDbContext context) : IMeasureRepository
     {
         public async Task<List<Measure>> GetMeasuresAsync() =>
-            await context.Measures.ToListAsync();
+            await context.Measures.AsNoTracking().ToListAsync();
     }
 }

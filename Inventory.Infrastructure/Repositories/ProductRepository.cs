@@ -11,7 +11,7 @@ namespace Inventory.Infrastructure.Repositories
     {
         public async Task<PaginatedList<Product>> GetProductsAsync(Guid businessId, string? name, int page, int pageSize) =>
             await context.Products
-                .AsQueryable()
+                .AsNoTracking()
                 .Where(p => p.BusinessId == businessId)
                 .Include(c => c.Category)
                 .Include(c => c.Measure)
@@ -21,6 +21,7 @@ namespace Inventory.Infrastructure.Repositories
 
         public async Task<Product?> GetProductByIdAsync(int id, Guid businessId) =>
             await context.Products
+                .AsNoTracking()
                 .Include(p => p.Category)
                 .Include(c => c.Measure)
                 .FirstOrDefaultAsync(p => p.Id == id && p.BusinessId == businessId);
@@ -30,6 +31,7 @@ namespace Inventory.Infrastructure.Repositories
             context.Products.Add(product);
             await context.SaveChangesAsync();
             return await context.Products
+                .AsNoTracking()
                 .Include(p => p.Category)
                 .Include(c => c.Measure)
                 .FirstAsync(p => p.Id == product.Id);
@@ -45,6 +47,7 @@ namespace Inventory.Infrastructure.Repositories
         public async Task DeleteProductAsync(Product product)
         {
             product.IsDeleted = true;
+            context.Products.Update(product);
             await context.SaveChangesAsync();
         }
 

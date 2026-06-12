@@ -12,7 +12,7 @@ namespace Inventory.Application.Services.WarehouseProductService
         public async Task<PaginatedList<WarehouseProductResponse>> GetProductsByWarehousesAsync(Guid id, ProductSearchParams searchParams, Guid businessId)
         {
             await FindWarehouseById(id, businessId);
-            var warehouseProducts = await repository.GetProductsByWarehousesAsync(id, searchParams.Name, searchParams.Page, searchParams.PageSize);
+            var warehouseProducts = await repository.GetProductsByWarehousesAsync(id, searchParams.Name, searchParams.PageIndex, searchParams.PageSize);
             return new PaginatedList<WarehouseProductResponse>(
                 mapper.Map<List<WarehouseProductResponse>>(warehouseProducts.Items),
                 warehouseProducts.TotalCount,
@@ -37,7 +37,7 @@ namespace Inventory.Application.Services.WarehouseProductService
         public async Task<PaginatedList<ProductResponse>> GetProductsDoesntExistByWarehouseAsync(Guid id, ProductSearchParams searchParams, Guid businessId)
         {
             await FindWarehouseById(id, businessId);
-            var products = await repository.GetProductsDoesntExistByWarehouseAsync(id, businessId, searchParams.Page, searchParams.PageSize);
+            var products = await repository.GetProductsDoesntExistByWarehouseAsync(id, businessId, searchParams.PageIndex, searchParams.PageSize);
             return new PaginatedList<ProductResponse>(
                 mapper.Map<List<ProductResponse>>(products.Items),
                 products.TotalCount,

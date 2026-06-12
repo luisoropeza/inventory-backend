@@ -13,12 +13,14 @@ namespace Inventory.Infrastructure.Repositories
         {
             context.Businesses.Add(business);
             await context.SaveChangesAsync();
-            return await context.Businesses.FirstAsync(b => b.Id == business.Id);
+            return await context.Businesses
+                .AsNoTracking()
+                .FirstAsync(b => b.Id == business.Id);
         }
 
         public async Task<PaginatedList<Business>> GetBusinessesAsync(string? name, int page, int pageSize) =>
             await context.Businesses
-                .AsQueryable()
+                .AsNoTracking()
                 .OrderBy(b => b.Name)
                 .FiltersBusiness(name)
                 .ToPaginatedListAsync(page, pageSize);

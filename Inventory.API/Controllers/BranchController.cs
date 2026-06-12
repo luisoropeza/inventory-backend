@@ -108,6 +108,7 @@ namespace Inventory.API.Controllers
         }
 
         [HttpGet("{id}/products/doesnt-exist")]
+        [ProducesResponseType(typeof(PaginatedList<ProductResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetProductsDoesntExistByBranchAsync(Guid id, [FromQuery] ProductSearchParams searchParams, [FromHeader][BindRequired] Guid businessId)
         {
             return Ok(await branchProductService.GetProductsDoesntExistByBranchAsync(id, searchParams, businessId));

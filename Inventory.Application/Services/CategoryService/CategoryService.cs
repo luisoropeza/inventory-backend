@@ -11,7 +11,7 @@ namespace Inventory.Application.Services.CategoryService
     {
         public async Task<PaginatedList<CategoryResponse>> GetCategoriesAsync(CategorySearchParams searchParams, Guid businessId)
         {
-            var categories = await repository.GetCategoriesAsync(businessId, searchParams.Name, searchParams.Page, searchParams.PageSize);
+            var categories = await repository.GetCategoriesAsync(businessId, searchParams.Name, searchParams.PageIndex, searchParams.PageSize);
             return new PaginatedList<CategoryResponse>(
                 mapper.Map<List<CategoryResponse>>(categories.Items),
                 categories.TotalCount,

@@ -15,7 +15,7 @@ namespace Inventory.Application.Services.UserService
     {
         public async Task<PaginatedList<UserResponse>> GetUsersAsync(UserSearchParams searchParams, Guid businessId)
         {
-            var paginatedUsers = await repository.GetUsersAsync(businessId, searchParams.Name, searchParams.Page, searchParams.PageSize);
+            var paginatedUsers = await repository.GetUsersAsync(businessId, searchParams.Name, searchParams.PageIndex, searchParams.PageSize);
             return new PaginatedList<UserResponse>(
                 mapper.Map<List<UserResponse>>(paginatedUsers.Items),
                 paginatedUsers.TotalCount,

@@ -47,7 +47,6 @@ public static class DependencyInjection
             typeof(RoleProfile),
             typeof(MeasureProfile),
             typeof(InventoryMovementProfile),
-            typeof(MeasureProfile),
             typeof(WarehouseProductProfile),
             typeof(AuditHistoryProfile),
             typeof(CustomerProfile),

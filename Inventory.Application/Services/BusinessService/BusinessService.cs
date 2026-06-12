@@ -22,7 +22,7 @@ namespace Inventory.Application.Services.BusinessService
         public async Task<PaginatedList<BusinessResponse>> GetBusinessesAsync(BusinessSearchParams searchParams)
         {
             var businesses = await repository.GetBusinessesAsync(
-                searchParams.Name, searchParams.Page, searchParams.PageSize);
+                searchParams.Name, searchParams.PageIndex, searchParams.PageSize);
             return new PaginatedList<BusinessResponse>(
                 mapper.Map<List<BusinessResponse>>(businesses.Items),
                 businesses.TotalCount,

@@ -13,7 +13,7 @@ namespace Inventory.Application.Services.AuditHistoryService
                 businessId,
                 searchParams.FromDate,
                 searchParams.ToDate,
-                searchParams.Page,
+                searchParams.PageIndex,
                 searchParams.PageSize);
             return new PaginatedList<AuditHistoryResponse>(
                 mapper.Map<List<AuditHistoryResponse>>(auditHistories.Items),

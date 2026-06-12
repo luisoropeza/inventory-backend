@@ -1,4 +1,4 @@
-﻿using Inventory.Application.Common.Abstracts;
+using Inventory.Application.Common.Abstracts;
 using Inventory.Application.Common.Pagination;
 using Inventory.Domain.Entities;
 using Inventory.Infrastructure.Context;
@@ -11,7 +11,7 @@ namespace Inventory.Infrastructure.Repositories
     {
         public async Task<PaginatedList<Warehouse>> GetWarehousesAsync(Guid businessId, string? name, int page, int pageSize) =>
             await context.Warehouses
-                .AsQueryable()
+                .AsNoTracking()
                 .Where(w => w.BusinessId == businessId)
                 .Include(w => w.Location)
                 .OrderByDescending(w => w.CreatedAt)
@@ -20,6 +20,7 @@ namespace Inventory.Infrastructure.Repositories
 
         public async Task<Warehouse?> GetWarehouseByIdAsync(Guid id, Guid businessId) =>
             await context.Warehouses
+                .AsNoTracking()
                 .Include(w => w.Location)
                 .FirstOrDefaultAsync(w => w.Id == id && w.BusinessId == businessId);
 
@@ -28,6 +29,7 @@ namespace Inventory.Infrastructure.Repositories
             context.Warehouses.Add(warehouse);
             await context.SaveChangesAsync();
             return await context.Warehouses
+                .AsNoTracking()
                 .Include(w => w.Location)
                 .FirstAsync(w => w.Id == warehouse.Id);
         }
@@ -42,12 +44,13 @@ namespace Inventory.Infrastructure.Repositories
         public async Task DeleteWarehouseAsync(Warehouse warehouse)
         {
             warehouse.IsDeleted = true;
+            context.Warehouses.Update(warehouse);
             await context.SaveChangesAsync();
         }
 
         public async Task<PaginatedList<WarehouseProduct>> GetProductsByWarehousesAsync(Guid id, string? name, int page, int pageSize) =>
            await context.WarehouseProducts
-                .AsQueryable()
+                .AsNoTracking()
                 .Where(wp => wp.WarehouseId == id)
                 .Include(wp => wp.Product)
                 .ThenInclude(wp => wp.Category)
@@ -57,6 +60,7 @@ namespace Inventory.Infrastructure.Repositories
 
         public async Task<WarehouseProduct?> GetWarehouseProductByWarehouseIdAndProductIdAsync(Guid? warehouseId, int productId) =>
             await context.WarehouseProducts
+                .AsNoTracking()
                 .Include(wp => wp.Product)
                 .FirstOrDefaultAsync(bp => warehouseId.HasValue && bp.WarehouseId == warehouseId.Value && bp.ProductId == productId);
 
@@ -68,7 +72,7 @@ namespace Inventory.Infrastructure.Repositories
 
         public async Task<PaginatedList<Product>> GetProductsDoesntExistByWarehouseAsync(Guid id, Guid businessId, int page, int pageSize) =>
             await context.Products
-                .AsQueryable()
+                .AsNoTracking()
                 .Where(p => p.BusinessId == businessId && !context.WarehouseProducts.Any(wp => wp.ProductId == p.Id && wp.WarehouseId == id))
                 .Include(p => p.Measure)
                 .Include(p => p.Category)
@@ -76,6 +80,7 @@ namespace Inventory.Infrastructure.Repositories
 
         public async Task<IEnumerable<WarehouseProduct>> GetWarehouseProductsByProductIdsAsync(Guid warehouseId, IEnumerable<int> productIds) =>
             await context.WarehouseProducts
+                .AsNoTracking()
                 .Include(wp => wp.Product)
                 .Where(wp => wp.WarehouseId == warehouseId && productIds.Contains(wp.ProductId))
                 .ToListAsync();

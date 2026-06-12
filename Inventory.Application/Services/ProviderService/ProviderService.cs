@@ -11,7 +11,7 @@ namespace Inventory.Application.Services.ProviderService
     {
         public async Task<PaginatedList<ProviderResponse>> GetProvidersAsync(ProviderSearchParams searchParams, Guid businessId)
         {
-            var providers = await repository.GetProvidersAsync(businessId, searchParams.Name, searchParams.Page, searchParams.PageSize);
+            var providers = await repository.GetProvidersAsync(businessId, searchParams.Name, searchParams.PageIndex, searchParams.PageSize);
             return new PaginatedList<ProviderResponse>(
                 mapper.Map<List<ProviderResponse>>(providers.Items),
                 providers.TotalCount,

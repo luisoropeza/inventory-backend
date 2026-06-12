@@ -1,4 +1,4 @@
-﻿using Inventory.Application.Common.Abstracts;
+using Inventory.Application.Common.Abstracts;
 using Inventory.Application.Common.Pagination;
 using Inventory.Domain.Entities;
 using Inventory.Domain.Enum;
@@ -24,6 +24,7 @@ namespace Inventory.Infrastructure.Repositories
             context.AuditHistories.Add(auditHistory);
             await context.SaveChangesAsync();
             return await context.InventoryMovements
+                .AsNoTracking()
                 .Include(im => im.Product)
                 .Include(im => im.FromWarehouse)
                 .Include(im => im.ToWarehouse)
@@ -34,7 +35,7 @@ namespace Inventory.Infrastructure.Repositories
 
         public async Task<PaginatedList<InventoryMovement>> GetInventoryMovementsAsync(Guid businessId, Guid? warehouseId, Guid? branchId, EnumMovementType? movementType, DateTime? fromDate, DateTime? toDate, int page, int pageSize) =>
             await context.InventoryMovements
-                .AsQueryable()
+                .AsNoTracking()
                 .Include(im => im.Product)
                 .Include(im => im.FromWarehouse)
                 .Include(im => im.ToWarehouse)

@@ -28,12 +28,12 @@ namespace Inventory.API.Middlewares
             }
             catch (Exception ex)
             {
-                logger.LogError("Exception occurred: {Message}", ex.Message);
+                logger.LogError(ex, "Exception occurred: {Message}", ex.Message);
 
                 if (ExceptionMap.TryGetValue(ex.GetType(), out var mapped))
                     await WriteProblemAsync(context, mapped.StatusCode, mapped.Title, ex.Message);
                 else
-                    await WriteProblemAsync(context, StatusCodes.Status500InternalServerError, "Server Error", ex.Message);
+                    await WriteProblemAsync(context, StatusCodes.Status500InternalServerError, "Server Error", "An unexpected error occurred.");
             }
         }
 

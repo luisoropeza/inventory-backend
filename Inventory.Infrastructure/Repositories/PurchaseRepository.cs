@@ -27,7 +27,7 @@ namespace Inventory.Infrastructure.Repositories
 
         public async Task<PaginatedList<Purchase>> GetPurchasesAsync(Guid businessId, DateTime? fromDate, DateTime? toDate, Guid? providerId, Guid? branchId, Guid? warehouseId, int pageIndex, int pageSize) =>
             await context.Purchases
-                .AsQueryable()
+                .AsNoTracking()
                 .Where(p => p.BusinessId == businessId)
                 .Include(p => p.Provider)
                 .Include(p => p.Buyer)
@@ -39,12 +39,14 @@ namespace Inventory.Infrastructure.Repositories
 
         public async Task<IEnumerable<BranchProduct>> GetBranchProductsByProductIdsAsync(Guid branchId, IEnumerable<int> productIds) =>
             await context.BranchProducts
+                .AsNoTracking()
                 .Include(bp => bp.Product)
                 .Where(bp => bp.BranchId == branchId && productIds.Contains(bp.ProductId))
                 .ToListAsync();
 
         public async Task<IEnumerable<WarehouseProduct>> GetWarehouseProductsByProductIdsAsync(Guid warehouseId, IEnumerable<int> productIds) =>
             await context.WarehouseProducts
+                .AsNoTracking()
                 .Include(wp => wp.Product)
                 .Where(wp => wp.WarehouseId == warehouseId && productIds.Contains(wp.ProductId))
                 .ToListAsync();

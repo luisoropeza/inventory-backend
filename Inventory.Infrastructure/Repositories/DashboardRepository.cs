@@ -8,7 +8,9 @@ namespace Inventory.Infrastructure.Repositories
     {
         public async Task<int> GetTodaySalesCountAsync(Guid businessId, Guid? branchId, DateTime start, DateTime end)
         {
-            var query = context.Sales.Where(s => s.BusinessId == businessId && s.Date >= start && s.Date < end);
+            var query = context.Sales
+                .AsNoTracking()
+                .Where(s => s.BusinessId == businessId && s.Date >= start && s.Date < end);
             if (branchId.HasValue)
                 query = query.Where(s => s.BranchId == branchId.Value);
             return await query.CountAsync();
@@ -16,7 +18,9 @@ namespace Inventory.Infrastructure.Repositories
 
         public async Task<double> GetTodaySalesTotalAsync(Guid businessId, Guid? branchId, DateTime start, DateTime end)
         {
-            var query = context.Sales.Where(s => s.BusinessId == businessId && s.Date >= start && s.Date < end);
+            var query = context.Sales
+                .AsNoTracking()
+                .Where(s => s.BusinessId == businessId && s.Date >= start && s.Date < end);
             if (branchId.HasValue)
                 query = query.Where(s => s.BranchId == branchId.Value);
             return await query.SumAsync(s => (double?)s.Total) ?? 0;
@@ -25,6 +29,7 @@ namespace Inventory.Infrastructure.Repositories
         public async Task<int> GetTodayMovementsCountAsync(Guid businessId, Guid? branchId, DateTime start, DateTime end)
         {
             var query = context.InventoryMovements
+                .AsNoTracking()
                 .Where(im => im.BusinessId == businessId && im.CreatedAt >= start && im.CreatedAt < end);
             if (branchId.HasValue)
                 query = query.Where(im => im.FromBranchId == branchId.Value || im.ToBranchId == branchId.Value);
@@ -35,12 +40,15 @@ namespace Inventory.Infrastructure.Repositories
         {
             if (branchId.HasValue)
                 return await context.BranchProducts
+                    .AsNoTracking()
                     .CountAsync(bp => bp.BranchId == branchId.Value && bp.Stock <= bp.LowStock);
 
             var branchLow = context.BranchProducts
+                .AsNoTracking()
                 .Where(bp => bp.Branch.BusinessId == businessId && bp.Stock <= bp.LowStock)
                 .Select(bp => bp.ProductId);
             var warehouseLow = context.WarehouseProducts
+                .AsNoTracking()
                 .Where(wp => wp.Warehouse.BusinessId == businessId && wp.Stock <= wp.LowStock)
                 .Select(wp => wp.ProductId);
             return await branchLow.Union(warehouseLow).CountAsync();

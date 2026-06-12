@@ -1,4 +1,5 @@
-﻿using Inventory.Application.Common.Abstracts.Clients;
+﻿using Inventory.Application.Common.Abstracts;
+using Inventory.Application.Common.Abstracts.Clients;
 using Inventory.Domain.Entities;
 using Inventory.Infrastructure.Configurations;
 using Microsoft.Extensions.Options;
@@ -10,9 +11,8 @@ using System.Text;
 
 namespace Inventory.Infrastructure.Clients
 {
-    public class JwtService(IOptions<JwtSettings> jwtSettings) : IJwtService
+    public class JwtService(IOptions<JwtSettings> jwtSettings, IDateTimeProvider dateTimeProvider) : IJwtService
     {
-
         private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 
         public string GenerateJwtToken(User user)
@@ -36,7 +36,7 @@ namespace Inventory.Infrastructure.Clients
                 issuer: _jwtSettings.Issuer,
                 audience: _jwtSettings.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpirationInMinutes),
+                expires: dateTimeProvider.UtcNow.AddMinutes(_jwtSettings.ExpirationInMinutes),
                 signingCredentials: credentials
             );
 

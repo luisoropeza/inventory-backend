@@ -11,7 +11,7 @@ namespace Inventory.Application.Services.CustomerService
     {
         public async Task<PaginatedList<CustomerResponse>> GetCustomersAsync(CustomerSearchParams searchParams, Guid businessId)
         {
-            var customers = await repository.GetCustomersAsync(businessId, searchParams.Name, searchParams.Page, searchParams.PageSize);
+            var customers = await repository.GetCustomersAsync(businessId, searchParams.Name, searchParams.PageIndex, searchParams.PageSize);
             return new PaginatedList<CustomerResponse>(
                 mapper.Map<List<CustomerResponse>>(customers.Items),
                 customers.TotalCount,

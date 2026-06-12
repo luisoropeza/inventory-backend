@@ -11,7 +11,7 @@ namespace Inventory.Infrastructure.Repositories
     {
         public async Task<PaginatedList<User>> GetUsersAsync(Guid businessId, string? name, int page, int pageSize) =>
             await context.Users
-                .AsQueryable()
+                .AsNoTracking()
                 .Where(u => u.BusinessId == businessId)
                 .Include(u => u.Role)
                 .OrderByDescending(u => u.CreatedAt)
@@ -20,11 +20,13 @@ namespace Inventory.Infrastructure.Repositories
 
         public async Task<User?> GetUserByIdAsync(Guid id, Guid businessId) =>
             await context.Users
+                .AsNoTracking()
                 .Include(u => u.Role)
                 .FirstOrDefaultAsync(u => u.Id == id && u.BusinessId == businessId);
 
         public async Task<User?> GetUserByUserNameAsync(string userName) =>
             await context.Users
+                .AsNoTracking()
                 .Include(u => u.Role)
                 .Include(u => u.Business)
                 .FirstOrDefaultAsync(u => u.UserName == userName && !u.IsDeleted);
@@ -34,6 +36,7 @@ namespace Inventory.Infrastructure.Repositories
             context.Users.Add(user);
             await context.SaveChangesAsync();
             return await context.Users
+                .AsNoTracking()
                 .Include(u => u.Role)
                 .FirstAsync(u => u.Id == user.Id);
         }
@@ -48,6 +51,7 @@ namespace Inventory.Infrastructure.Repositories
         public async Task DeleteUserAsync(User user)
         {
             user.IsDeleted = true;
+            context.Users.Update(user);
             await context.SaveChangesAsync();
         }
     }

@@ -1,4 +1,4 @@
-﻿using Inventory.Application.Common.Abstracts;
+using Inventory.Application.Common.Abstracts;
 using Inventory.Application.Common.Pagination;
 using Inventory.Domain.Entities;
 using Inventory.Domain.Enum;
@@ -11,7 +11,8 @@ namespace Inventory.Infrastructure.Repositories
     public class AuditHistoryRepository(InventoryDbContext context) : IAuditHistoryRepository
     {
         public async Task<PaginatedList<AuditHistory>> GetAuditHistoriesAsync(Guid businessId, DateTime? fromDate, DateTime? toDate, int page, int pageSize) =>
-            await context.AuditHistories.AsQueryable()
+            await context.AuditHistories
+                .AsNoTracking()
                 .Where(a => a.BusinessId == businessId)
                 .Include(a => a.User)
                 .OrderByDescending(a => a.CreatedAt)

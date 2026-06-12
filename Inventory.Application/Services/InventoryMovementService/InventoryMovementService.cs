@@ -23,7 +23,7 @@ namespace Inventory.Application.Services.InventoryMovementService
                 searchParams.MovementType,
                 searchParams.FromDate,
                 searchParams.ToDate,
-                searchParams.Page,
+                searchParams.PageIndex,
                 searchParams.PageSize);
             return new PaginatedList<InventoryMovementResponse>(
                 mapper.Map<List<InventoryMovementResponse>>(paginatedInventoryMovements.Items),

@@ -14,7 +14,7 @@ namespace Inventory.Application.Services.BranchService
     {
         public async Task<PaginatedList<BranchResponse>> GetBranchesAsync(BranchSearchParams searchParams, Guid businessId)
         {
-            var paginatedBranches = await repository.GetBranchesAsync(businessId, searchParams.Name, searchParams.Page, searchParams.PageSize);
+            var paginatedBranches = await repository.GetBranchesAsync(businessId, searchParams.Name, searchParams.PageIndex, searchParams.PageSize);
             return new PaginatedList<BranchResponse>(
                 mapper.Map<List<BranchResponse>>(paginatedBranches.Items),
                 paginatedBranches.TotalCount,

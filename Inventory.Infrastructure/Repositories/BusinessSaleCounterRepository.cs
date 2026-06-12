@@ -26,6 +26,7 @@ namespace Inventory.Infrastructure.Repositories
             {
                 counterEntity.Counter += 1;
                 nextValue = counterEntity.Counter;
+                context.BusinessSaleCounters.Update(counterEntity);
             }
             await context.SaveChangesAsync();
             return $"POS-{nextValue:D4}";

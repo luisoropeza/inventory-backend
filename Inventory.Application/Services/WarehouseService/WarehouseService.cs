@@ -10,7 +10,7 @@ namespace Inventory.Application.Services.WarehouseService
     {
         public async Task<PaginatedList<WarehouseResponse>> GetWarehousesAsync(WarehouseSearchParams searchParams, Guid businessId)
         {
-            var warehouses = await repository.GetWarehousesAsync(businessId, searchParams.Name, searchParams.Page, searchParams.PageSize);
+            var warehouses = await repository.GetWarehousesAsync(businessId, searchParams.Name, searchParams.PageIndex, searchParams.PageSize);
             return new PaginatedList<WarehouseResponse>(
                 mapper.Map<List<WarehouseResponse>>(warehouses.Items),
                 warehouses.TotalCount,

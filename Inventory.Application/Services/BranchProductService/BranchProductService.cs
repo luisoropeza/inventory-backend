@@ -13,7 +13,7 @@ namespace Inventory.Application.Services.BranchProductService
         public async Task<PaginatedList<BranchProductResponse>> GetProductsByBranchAsync(Guid id, ProductSearchParams searchParams, Guid businessId)
         {
             await FindBranchById(id, businessId);
-            var paginatedBranchProducts = await repository.GetProductsByBranchAsync(id, searchParams.Name, searchParams.Page, searchParams.PageSize);
+            var paginatedBranchProducts = await repository.GetProductsByBranchAsync(id, searchParams.Name, searchParams.PageIndex, searchParams.PageSize);
             return new PaginatedList<BranchProductResponse>(
                 mapper.Map<List<BranchProductResponse>>(paginatedBranchProducts.Items),
                 paginatedBranchProducts.TotalCount,
@@ -46,7 +46,7 @@ namespace Inventory.Application.Services.BranchProductService
         public async Task<PaginatedList<ProductResponse>> GetProductsDoesntExistByBranchAsync(Guid id, ProductSearchParams searchParams, Guid businessId)
         {
             await FindBranchById(id, businessId);
-            var products = await repository.GetProductsDoesntExistByBranchAsync(id, businessId, searchParams.Page, searchParams.PageSize);
+            var products = await repository.GetProductsDoesntExistByBranchAsync(id, businessId, searchParams.PageIndex, searchParams.PageSize);
             return new PaginatedList<ProductResponse>(
                 mapper.Map<List<ProductResponse>>(products.Items),
                 products.TotalCount,

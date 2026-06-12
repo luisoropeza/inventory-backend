@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Inventory.Infrastructure.Repositories
 {
-    public class ProviderRepository(InventoryDbContext context) : IProviderRepository
+    public class ProviderRepository(InventoryDbContext context, IDateTimeProvider dateTimeProvider) : IProviderRepository
     {
         public async Task<PaginatedList<Provider>> GetProvidersAsync(Guid businessId, string? name, int page, int pageSize) =>
             await context.Providers
-                .AsQueryable()
+                .AsNoTracking()
                 .Where(p => p.BusinessId == businessId)
                 .OrderByDescending(b => b.CreatedAt)
                 .FiltersProvider(name)
@@ -19,6 +19,7 @@ namespace Inventory.Infrastructure.Repositories
 
         public async Task<Provider?> GetProviderByIdAsync(Guid id, Guid businessId) =>
             await context.Providers
+                .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id && c.BusinessId == businessId);
 
         public async Task<Provider> CreateProviderAsync(Provider provider)
@@ -26,12 +27,13 @@ namespace Inventory.Infrastructure.Repositories
             context.Providers.Add(provider);
             await context.SaveChangesAsync();
             return await context.Providers
+                .AsNoTracking()
                 .FirstAsync(c => c.Id == provider.Id);
         }
 
         public async Task UpdateProviderAsync(Provider provider)
         {
-            provider.UpdatedAt = DateTime.UtcNow;
+            provider.UpdatedAt = dateTimeProvider.UtcNow;
             context.Providers.Update(provider);
             await context.SaveChangesAsync();
         }
@@ -39,6 +41,7 @@ namespace Inventory.Infrastructure.Repositories
         public async Task DeleteProviderAsync(Provider provider)
         {
             provider.IsDeleted = true;
+            context.Providers.Update(provider);
             await context.SaveChangesAsync();
         }
     }
